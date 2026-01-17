@@ -1,0 +1,97 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+}
+
+/* Encabezado */
+header {
+    background-color: #333C87;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Navegación */
+nav {
+    background-color: #e0e0e0;
+    padding: 10px;
+    text-align: center;
+}
+
+nav a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Contenedor principal */
+main {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Sección principal */
+section {
+    flex: 2;
+    background-color: white;
+    padding: 15px;
+}
+
+/* Barra lateral */
+aside {
+    flex: 2;
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 5px;
+    border-left: 4px solid #00ffff;
+}
+/* Imágenes */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-top: 10px;
+}
+/* Pie de página */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
+/* ========================= */
+/* DISEÑO RESPONSIVO */
+/* ========================= */
+
+/* TABLET */
+@media (max-width: 1024px) {
+
+    section {
+        flex: 2;
+    }
+
+    aside {
+        flex: 1;
+    }
+}
+
+/* MÓVIL */
+@media (max-width: 600px) {
+
+    main {
+        flex-direction: column;
+    }
+
+    nav {
+        display: flex;
+        flex-direction: column;
+    }
+
+    nav a {
+        margin: 5px 0;
+    }
+}
