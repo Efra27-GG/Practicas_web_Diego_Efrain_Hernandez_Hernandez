@@ -1,0 +1,14 @@
+.modal {
+display: none;
+position: fixed;
+inset: 0;
+background-color:
+rgba(0,0,0,0.5);
+}
+.modal-contenido {
+background-color: white;
+padding: 20px;
+margin: 100px auto;
+width: 300px;
+border-radius: 8px;
+}

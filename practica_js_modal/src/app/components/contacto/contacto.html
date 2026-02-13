@@ -1,0 +1,65 @@
+<div class="container mt-4">
+<h2>Contacto</h2>
+<form #formContacto="ngForm"
+(ngSubmit)="procesarFormulario(formContacto)">
+<div class="mb-3">
+<label class="form-label">Nombre</label>
+<input
+type="text"
+class="form-control"
+name="nombre"
+ngModel
+required
+minlength="3"
+maxlength="30"
+#nombreCtrl="ngModel"
+#nombre="ngModel"
+pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
+(input)="soloLetras($event)">
+</div>
+
+
+<div *ngIf="nombreCtrl.invalid && nombreCtrl.touched" class="text-danger">
+<small *ngIf="nombreCtrl.errors?.['required']">
+El nombre es obligatorio
+</small>
+<small *ngIf="nombreCtrl.errors?.['minlength']">
+El nombre debe tener al menos 3 caracteres
+</small>
+<small *ngIf="nombreCtrl.errors?.['maxlength']">
+El nombre no debe exceder 30 caracteres
+</small>
+</div>
+<div
+class="text-danger mt-1"
+*ngIf="nombre.invalid && nombre.touched">
+El nombre solo debe contener letras.
+</div>
+<div class="mb-3">
+<label class="form-label">Correo</label>
+<input
+type="email"
+class="form-control"
+name="correo"
+ngModel
+required
+email>
+</div>
+<button class="btn btn-primary" type="submit">
+Enviar
+</button>
+</form>
+</div>
+<div class="modal fade" id="modalResultado" tabindex="-1">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title">{{ tituloModal }}</h5>
+<button class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+<p>{{ mensajeModal }}</p>
+</div>
+</div>
+</div>
+</div>
