@@ -11,10 +11,6 @@ templateUrl: './contacto.html',
 styleUrl: './contacto.css',
 })
 
-
-
-
-
 export class Contacto {
 tituloModal = '';
 mensajeModal = '';
