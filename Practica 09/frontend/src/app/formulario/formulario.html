@@ -1,0 +1,15 @@
+<form #formAlumno="ngForm" (ngSubmit)="guardarAlumno(formAlumno)">
+  <div class="mb-3">
+    <label for="nombre">Nombre:</label>
+    <input type="text" class="form-control" ngModel id="nombre" name="nombre" required>
+  </div>
+  <div class="mb-3">
+    <label for="edad">Edad:</label>
+    <input type="number" class="form-control" ngModel id="edad" name="edad" required>
+  </div>
+  <div class="mb-3">
+    <label for="carrera">Carrera:</label>
+    <input type="text" class="form-control" ngModel id="carrera" name="carrera" required>
+  </div>
+  <button type="submit" class="btn btn-primary">Guardar</button>
+</form>
