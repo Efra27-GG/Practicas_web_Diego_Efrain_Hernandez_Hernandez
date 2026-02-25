@@ -1,0 +1,89 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">Agregar Videojuego</h4>
+        </div>
+        <div class="card-body">
+          <form #gameForm="ngForm" (ngSubmit)="onSubmit(gameForm)">
+            <div class="mb-3">
+              <label for="nombre" class="form-label">Nombre:</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="nombre" 
+                name="nombre"
+                [(ngModel)]="game.nombre"
+                required
+                #nombre="ngModel"
+              >
+              <div *ngIf="nombre.invalid && nombre.touched" class="text-danger">
+                El nombre es requerido
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="genero" class="form-label">Género:</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="genero" 
+                name="genero"
+                [(ngModel)]="game.genero"
+                required
+                #genero="ngModel"
+              >
+              <div *ngIf="genero.invalid && genero.touched" class="text-danger">
+                El género es requerido
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="precio" class="form-label">Precio:</label>
+              <input 
+                type="number" 
+                class="form-control" 
+                id="precio" 
+                name="precio"
+                [(ngModel)]="game.precio"
+                required
+                min="0"
+                #precio="ngModel"
+              >
+              <div *ngIf="precio.invalid && precio.touched" class="text-danger">
+                El precio es requerido y debe ser mayor a 0
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="imagenUrl" class="form-label">URL de Imagen:</label>
+              <input 
+                type="url" 
+                class="form-control" 
+                id="imagenUrl" 
+                name="imagenUrl"
+                [(ngModel)]="game.imagenUrl"
+                required
+                #imagenUrl="ngModel"
+              >
+              <div *ngIf="imagenUrl.invalid && imagenUrl.touched" class="text-danger">
+                La URL de imagen es requerida
+              </div>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button 
+                type="submit" 
+                class="btn btn-primary"
+                [disabled]="gameForm.invalid"
+              >
+                Guardar Videojuego
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

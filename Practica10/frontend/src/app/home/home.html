@@ -1,0 +1,28 @@
+<div class="container mt-4">
+  <h2 class="text-center mb-4">Catálogo de Videojuegos</h2>
+  
+  <div class="row" *ngIf="games.length > 0">
+    <div class="col-md-4 mb-4" *ngFor="let game of games">
+      <div class="card h-100 shadow-sm">
+        <img 
+          [src]="game.imagenUrl || 'https://via.placeholder.com/300x400?text=Sin+Imagen'" 
+          class="card-img-top" 
+          [alt]="game.nombre"
+          style="height: 300px; object-fit: cover;"
+          (error)="game.imagenUrl = 'https://via.placeholder.com/300x400?text=Error+Imagen'"
+        >
+        <div class="card-body">
+          <h5 class="card-title">{{ game.nombre }}</h5>
+          <p class="card-text">
+            <strong>Género:</strong> {{ game.genero }}<br>
+            <strong>Precio:</strong> ${{ game.precio }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="alert alert-info text-center" *ngIf="games.length === 0">
+    No hay videojuegos disponibles. Agrega uno desde el menú "Agregar".
+  </div>
+</div>
