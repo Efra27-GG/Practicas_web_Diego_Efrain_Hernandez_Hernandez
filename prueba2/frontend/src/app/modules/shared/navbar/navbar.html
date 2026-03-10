@@ -1,0 +1,84 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <!-- Logo -->
+    <a class="navbar-brand" routerLink="/home">
+      <span class="fw-bold">Shadow</span><span class="text-primary">Angels</span>
+    </a>
+    
+    <!-- Botón hamburguesa para móvil -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarMain">
+      <!-- Menú principal -->
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/dama" routerLinkActive="active">Dama</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/caballero" routerLinkActive="active">Caballero</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/ofertas" routerLinkActive="active">Ofertas</a>
+        </li>
+        
+        <!-- Menú de Admin (solo para admins) -->
+        <li class="nav-item dropdown" *ngIf="authService.hasRole(['admin', 'superadmin'])">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+            Admin
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" routerLink="/admin/home">Dashboard</a></li>
+            <li><a class="dropdown-item" routerLink="/admin/productos">Productos</a></li>
+            <li><a class="dropdown-item" routerLink="/admin/productos/nuevo">+ Nuevo Producto</a></li>
+            <li><hr class="dropdown-divider" *ngIf="authService.hasRole('superadmin')"></li>
+            <li *ngIf="authService.hasRole('superadmin')">
+              <a class="dropdown-item" routerLink="/admin/admins">Gestionar Admins</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      
+      <!-- Buscador -->
+      <form class="d-flex me-3" role="search">
+        <input class="form-control me-2" type="search" placeholder="Buscar productos...">
+        <button class="btn btn-outline-primary" type="submit">Buscar</button>
+      </form>
+      
+      <!-- Menú de usuario -->
+      <div class="d-flex align-items-center gap-2">
+        <!-- Usuario logueado -->
+        <ng-container *ngIf="authService.getCurrentUser() as user">
+          <span class="text-light me-2">
+            👋 Hola, {{user.nombre}}
+          </span>
+          <a class="btn btn-outline-light me-2" routerLink="/perfil">
+            Perfil
+          </a>
+          <a class="btn btn-outline-light me-2 position-relative" routerLink="/notificaciones">
+            Notificaciones
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+                  *ngIf="noLeidas > 0">
+              {{noLeidas}}
+              <span class="visually-hidden">notificaciones no leídas</span>
+            </span>
+          </a>
+          <button class="btn btn-danger" (click)="authService.logout()">
+            Cerrar sesión
+          </button>
+        </ng-container>
+        
+        <!-- Usuario no logueado -->
+        <ng-container *ngIf="!authService.getCurrentUser()">
+          <a class="btn btn-outline-light me-2" routerLink="/login">
+            Iniciar sesión
+          </a>
+          <a class="btn btn-primary" routerLink="/registro">
+            Registrarse
+          </a>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</nav>

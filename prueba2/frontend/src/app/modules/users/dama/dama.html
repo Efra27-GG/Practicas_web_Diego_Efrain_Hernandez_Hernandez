@@ -1,0 +1,80 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Dama</h1>
+    <div>
+      <select class="form-select" style="width: auto;">
+        <option>Ordenar por</option>
+        <option>Precio: menor a mayor</option>
+        <option>Precio: mayor a menor</option>
+        <option>Más vendidos</option>
+        <option>Mejor calificados</option>
+      </select>
+    </div>
+  </div>
+  
+  <div class="row">
+    <!-- Filtros laterales -->
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="card-title">Tallas</h6>
+          <div class="mb-3">
+            <div class="form-check" *ngFor="let talla of tallasDisponibles">
+              <input class="form-check-input" type="checkbox" [value]="talla">
+              <label class="form-check-label">{{talla}}</label>
+            </div>
+          </div>
+          
+          <h6 class="card-title">Precio máximo: \${{precioMaximo}}</h6>
+          <div class="mb-3">
+            <input type="range" class="form-range" min="0" [max]="precioMaximo" step="10">
+            <div class="d-flex justify-content-between">
+              <span>$0</span>
+              <span>\${{precioMaximo}}</span>
+            </div>
+          </div>
+          
+          <button class="btn btn-primary w-100">Aplicar filtros</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Grid de productos -->
+    <div class="col-md-9">
+      <div class="row">
+        <div class="col-md-4 mb-4" *ngFor="let producto of productos">
+          <div class="card h-100">
+            <div class="bg-secondary p-4 text-center position-relative">
+              <span class="display-6">{{producto.imagenes[0]}}</span>
+              <span class="position-absolute top-0 end-0 badge bg-danger m-2" *ngIf="producto.descuento">
+                -{{getDescuento(producto)}}%
+              </span>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">{{producto.nombre}}</h5>
+              <p class="card-text text-muted">
+                Tallas: {{producto.tallas.join(', ')}}
+              </p>
+              <div class="mb-2">
+                <span class="text-warning">⭐</span>
+                <span class="ms-1">{{producto.calificacion || 0}}</span>
+              </div>
+              <div *ngIf="producto.precioOriginal" class="mb-1">
+                <span class="text-muted"><del>\${{producto.precioOriginal.toFixed(2)}}</del></span>
+              </div>
+              <p class="fw-bold text-primary">\${{producto.precio.toFixed(2)}}</p>
+              <a class="btn btn-sm btn-outline-primary w-100" [routerLink]="['/producto', producto.id]">
+                Ver detalle
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Mensaje si no hay productos -->
+        <div class="col-12 text-center py-5" *ngIf="productos.length === 0">
+          <p class="text-muted">No hay productos disponibles en esta categoría</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,78 @@
+<div class="resenas mt-4">
+  <!-- Promedio -->
+  <div class="d-flex align-items-center mb-4">
+    <h3 class="mb-0 me-3">Reseñas</h3>
+    <div class="d-flex align-items-center">
+      <span class="text-warning me-2">⭐</span>
+      <span class="fw-bold">{{getPromedio() | number:'1.1-1'}}</span>
+      <span class="text-muted ms-2">({{resenas.length}} reseñas)</span>
+    </div>
+  </div>
+
+  <!-- Formulario de nueva reseña (solo usuarios registrados) -->
+  <div class="card mb-4" *ngIf="authService.getCurrentUser()">
+    <div class="card-body">
+      <h5>Escribe tu reseña</h5>
+      
+      <div *ngIf="!puedeReseniar()" class="alert alert-info">
+        Ya has reseñado este producto
+      </div>
+
+      <form *ngIf="puedeReseniar()" (ngSubmit)="enviarResena()">
+        <div class="mb-3">
+          <label class="form-label">Calificación</label>
+          <div class="d-flex gap-2">
+            <button type="button" 
+                    class="btn" 
+                    *ngFor="let i of [1,2,3,4,5]"
+                    [class.btn-warning]="i <= nuevaResena.calificacion"
+                    [class.btn-outline-secondary]="i > nuevaResena.calificacion"
+                    (click)="nuevaResena.calificacion = i">
+              ⭐
+            </button>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="comentario" class="form-label">Comentario</label>
+          <textarea 
+            class="form-control" 
+            id="comentario"
+            rows="3"
+            [(ngModel)]="nuevaResena.comentario"
+            name="comentario"
+            required
+          ></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          Publicar reseña
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Lista de reseñas -->
+  <div class="resenas-list">
+    <div class="card mb-3" *ngFor="let resena of resenas">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h6 class="mb-1">{{resena.usuarioNombre}}</h6>
+            <div class="mb-2">
+              <span class="text-warning" *ngFor="let i of [1,2,3,4,5]">
+                {{i <= resena.calificacion ? '⭐' : '☆'}}
+              </span>
+            </div>
+            <p class="card-text">{{resena.comentario}}</p>
+            <small class="text-muted">{{resena.fecha | date:'dd/MM/yyyy'}}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="resenas.length === 0" class="text-center py-4 text-muted">
+      No hay reseñas para este producto. ¡Sé el primero en comentar!
+    </div>
+  </div>
+</div>

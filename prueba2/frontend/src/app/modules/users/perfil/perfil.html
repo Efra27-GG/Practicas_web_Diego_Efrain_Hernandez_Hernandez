@@ -1,0 +1,183 @@
+<div class="container mt-4" *ngIf="usuario">
+  <!-- Header -->
+  <div class="d-flex align-items-center mb-4">
+    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+         style="width: 80px; height: 80px; font-size: 2rem;">
+      {{usuario.nombre.charAt(0)}}
+    </div>
+    <div>
+      <h1 class="mb-1">{{usuario.nombre}}</h1>
+      <div class="d-flex align-items-center">
+        <span class="badge me-2" [ngClass]="getRolBadge(usuario.role)">
+          {{usuario.role | titlecase}}
+        </span>
+        <span class="text-muted">
+          Miembro desde {{usuario.fechaRegistro | date:'MMMM yyyy'}}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pestañas -->
+  <ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'perfil'" 
+         (click)="cambiarTab('perfil')" href="javascript:void(0)">
+        👤 Datos Personales
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'password'" 
+         (click)="cambiarTab('password')" href="javascript:void(0)">
+        🔒 Cambiar Contraseña
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="activeTab === 'resenas'" 
+         (click)="cambiarTab('resenas')" href="javascript:void(0)">
+        ⭐ Mis Reseñas
+      </a>
+    </li>
+    <li class="nav-item" *ngIf="usuario.role === 'admin' || usuario.role === 'superadmin'">
+      <a class="nav-link" routerLink="/admin/perfil" routerLinkActive="active">
+        ⚙️ Panel Admin
+      </a>
+    </li>
+  </ul>
+
+  <!-- CONTENIDO DE PESTAÑAS -->
+  <div class="card shadow">
+    <div class="card-body p-4">
+      
+      <!-- PESTAÑA PERFIL -->
+      <div *ngIf="activeTab === 'perfil'">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3>Datos Personales</h3>
+          <button *ngIf="!editando" class="btn btn-primary" (click)="activarEdicion()">
+            ✏️ Editar Perfil
+          </button>
+        </div>
+
+        <div *ngIf="mensaje" class="alert alert-success">{{mensaje}}</div>
+        <div *ngIf="mensajeError" class="alert alert-danger">{{mensajeError}}</div>
+
+        <!-- MODO VER -->
+        <div *ngIf="!editando" class="row">
+          <div class="col-md-6">
+            <table class="table">
+              <tr>
+                <th style="width: 150px;">Nombre:</th>
+                <td>{{usuario.nombre}}</td>
+              </tr>
+              <tr>
+                <th>Email:</th>
+                <td>{{usuario.email}}</td>
+              </tr>
+              <tr>
+                <th>Teléfono:</th>
+                <td>{{usuario.telefono || 'No registrado'}}</td>
+              </tr>
+              <tr>
+                <th>Rol:</th>
+                <td>
+                  <span class="badge" [ngClass]="getRolBadge(usuario.role)">
+                    {{usuario.role | titlecase}}
+                  </span>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- MODO EDICIÓN -->
+        <div *ngIf="editando">
+          <form>
+            <div class="mb-3">
+              <label class="form-label">Nombre completo</label>
+              <input type="text" class="form-control" [(ngModel)]="nombreEdit" name="nombre">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" [(ngModel)]="emailEdit" name="email">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Teléfono</label>
+              <input type="tel" class="form-control" [(ngModel)]="telefonoEdit" name="telefono">
+            </div>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-success" (click)="guardarPerfil()">
+                Guardar Cambios
+              </button>
+              <button type="button" class="btn btn-secondary" (click)="cancelarEdicion()">
+                Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- PESTAÑA CAMBIAR CONTRASEÑA -->
+      <div *ngIf="activeTab === 'password'">
+        <h3 class="mb-4">Cambiar Contraseña</h3>
+
+        <div *ngIf="mensajePassword" class="alert alert-success">{{mensajePassword}}</div>
+        <div *ngIf="mensajePasswordError" class="alert alert-danger">{{mensajePasswordError}}</div>
+
+        <form>
+          <div class="mb-3">
+            <label class="form-label">Contraseña actual</label>
+            <input type="password" class="form-control" [(ngModel)]="passwordActual" name="actual">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Nueva contraseña</label>
+            <input type="password" class="form-control" [(ngModel)]="passwordNueva" name="nueva">
+            <small class="text-muted">Mínimo 6 caracteres</small>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Confirmar nueva contraseña</label>
+            <input type="password" class="form-control" [(ngModel)]="passwordConfirm" name="confirm">
+          </div>
+          <button type="button" class="btn btn-warning" (click)="cambiarPassword()">
+            Cambiar Contraseña
+          </button>
+        </form>
+      </div>
+
+      <!-- PESTAÑA MIS RESEÑAS -->
+      <div *ngIf="activeTab === 'resenas'">
+        <h3 class="mb-4">Mis Reseñas</h3>
+
+        <div *ngIf="resenas.length === 0" class="text-center py-5">
+          <span class="display-1 text-muted">📝</span>
+          <p class="text-muted mt-3">No has escrito ninguna reseña aún</p>
+          <a routerLink="/producto/1" class="btn btn-primary">Ver productos</a>
+        </div>
+
+        <div class="list-group" *ngIf="resenas.length > 0">
+          <div class="list-group-item" *ngFor="let resena of resenas">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h5 class="mb-1">{{resena.productoNombre}}</h5>
+                <div class="mb-2">
+                  <span class="text-warning" *ngFor="let i of [1,2,3,4,5]">
+                    {{i <= resena.calificacion ? '⭐' : '☆'}}
+                  </span>
+                </div>
+                <p class="mb-1">{{resena.comentario}}</p>
+                <small class="text-muted">{{resena.fecha | date:'dd/MM/yyyy'}}</small>
+              </div>
+              <span class="badge bg-primary">Producto #{{resena.productoId}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Si no hay usuario logueado -->
+<div class="container mt-5 text-center" *ngIf="!usuario">
+  <h2>No has iniciado sesión</h2>
+  <p class="text-muted">Inicia sesión para ver tu perfil</p>
+  <a routerLink="/login" class="btn btn-primary">Iniciar Sesión</a>
+</div>

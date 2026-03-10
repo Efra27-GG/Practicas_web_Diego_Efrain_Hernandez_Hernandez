@@ -1,0 +1,88 @@
+<div class="container mt-4">
+  <!-- Banner principal (igual) -->
+  <div class="bg-dark text-white p-5 rounded-3 mb-5">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <h1 class="display-4 fw-bold">Shadow<span class="text-primary">Angels</span></h1>
+        <p class="lead">Ropa de etiqueta con estilo único. Encuentra las mejores marcas a los mejores precios.</p>
+        <a class="btn btn-primary btn-lg" routerLink="/ofertas">Ver ofertas</a>
+      </div>
+      <div class="col-md-6">
+        <div class="bg-secondary p-5 rounded-3 text-center">
+          <span class="display-1">👕</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Categorías destacadas (igual) -->
+  <h2 class="text-center mb-4">Categorías</h2>
+  <div class="row mb-5">
+    <div class="col-md-4 mb-3">
+      <div class="card">
+        <div class="card-body text-center p-4">
+          <span class="display-1">👗</span>
+          <h3>Dama</h3>
+          <p class="text-muted">Vestidos, blusas, pants y más</p>
+          <a class="btn btn-outline-primary" routerLink="/dama">Ver más</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+      <div class="card">
+        <div class="card-body text-center p-4">
+          <span class="display-1">👔</span>
+          <h3>Caballero</h3>
+          <p class="text-muted">Camisas, pants, playeras y más</p>
+          <a class="btn btn-outline-primary" routerLink="/caballero">Ver más</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+      <div class="card">
+        <div class="card-body text-center p-4">
+          <span class="display-1">🏷️</span>
+          <h3>Ofertas</h3>
+          <p class="text-muted">Descuentos especiales</p>
+          <a class="btn btn-outline-primary" routerLink="/ofertas">Ver más</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Productos más vendidos (AHORA DINÁMICO) -->
+  <h2 class="text-center mb-4">Más vendidos</h2>
+  <div class="row">
+    <div class="col-md-3 mb-4" *ngFor="let producto of masVendidos">
+      <div class="card h-100">
+        <div class="bg-secondary p-4 text-center position-relative">
+          <span class="display-4">{{producto.imagenes[0]}}</span>
+          <span class="position-absolute top-0 start-0 badge bg-warning text-dark m-2" *ngIf="producto.vendidos && producto.vendidos > 100">
+            🔥 Más vendido
+          </span>
+          <span class="position-absolute top-0 end-0 badge bg-danger m-2" *ngIf="producto.descuento">
+            -{{getDescuento(producto)}}%
+          </span>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">{{producto.nombre}}</h5>
+          <p class="card-text text-muted">{{producto.categoria | titlecase}}</p>
+          <div class="mb-2">
+            <span class="text-warning">⭐</span>
+            <span class="ms-1">{{producto.calificacion || 0}}</span>
+            <span class="text-muted ms-2">({{producto.vendidos || 0}} vendidos)</span>
+          </div>
+          <div *ngIf="producto.precioOriginal" class="mb-1">
+            <span class="text-muted"><del>\${{producto.precioOriginal.toFixed(2)}}</del></span>
+          </div>
+          <p class="fw-bold text-primary h4">\${{producto.precio.toFixed(2)}}</p>
+          <a class="btn btn-sm btn-outline-primary w-100" [routerLink]="['/producto', producto.id]">
+            Ver detalle
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

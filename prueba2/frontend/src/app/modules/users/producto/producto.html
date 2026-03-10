@@ -1,0 +1,113 @@
+<div class="container mt-4" *ngIf="producto">
+  <!-- Migas de pan -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a routerLink="/home">Inicio</a></li>
+      <li class="breadcrumb-item"><a [routerLink]="'/' + producto.categoria">{{producto.categoria | titlecase}}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{producto.nombre}}</li>
+    </ol>
+  </nav>
+  
+  <div class="row">
+    <!-- Imagen del producto -->
+    <div class="col-md-6 mb-4">
+      <div class="bg-light p-5 text-center rounded-3">
+        <span class="display-1">{{producto.imagenes[0]}}</span>
+      </div>
+      
+      <!-- Miniaturas (simuladas) -->
+      <div class="row mt-3">
+        <div class="col-3" *ngFor="let img of producto.imagenes">
+          <div class="bg-light p-2 text-center rounded-3">
+            <span class="h3">{{img}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Detalles del producto -->
+    <div class="col-md-6">
+      <h1 class="mb-3">{{producto.nombre}}</h1>
+      
+      <!-- Calificación -->
+      <div class="d-flex align-items-center mb-3">
+        <div class="text-warning">
+          <span>⭐</span>
+          <span class="ms-1">{{producto.calificacion || 0}}</span>
+        </div>
+        <span class="text-muted mx-2">|</span>
+        <span class="text-muted">{{producto.vendidos || 0}} vendidos</span>
+      </div>
+      
+      <!-- Precio -->
+      <div class="mb-4">
+        <div *ngIf="producto.precioOriginal" class="mb-2">
+          <span class="text-muted h5"><del>\${{producto.precioOriginal.toFixed(2)}}</del></span>
+          <span class="badge bg-danger ms-2">-{{getDescuento()}}%</span>
+        </div>
+        <div class="d-flex align-items-center">
+          <span class="display-6 fw-bold text-primary">\${{producto.precio.toFixed(2)}}</span>
+        </div>
+      </div>
+      
+      <!-- Descripción -->
+      <div class="mb-4">
+        <h5>Descripción</h5>
+        <p class="text-muted">{{producto.descripcion}}</p>
+      </div>
+      
+      <!-- Tallas -->
+      <div class="mb-4">
+        <h5>Tallas disponibles</h5>
+        <div class="d-flex gap-2 flex-wrap">
+          <span class="badge bg-light text-dark p-2 border" *ngFor="let talla of producto.tallas">
+            {{talla}}
+          </span>
+        </div>
+      </div>
+      
+      <!-- Botones de acción -->
+      <div class="d-grid gap-2">
+        <button class="btn btn-primary btn-lg">Contactar por WhatsApp</button>
+        <button class="btn btn-outline-primary">💬 Preguntar al vendedor</button>
+      </div>
+      
+      <!-- Información adicional -->
+      <div class="mt-4 p-3 bg-light rounded-3">
+        <p class="mb-1">📦 Entrega: Punto de encuentro acordado</p>
+        <p class="mb-0">💳 Pago: Efectivo o transferencia</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Productos relacionados (UNA SOLA VEZ) -->
+  <div class="mt-5" *ngIf="productosRelacionados.length > 0">
+    <h3 class="mb-4">Productos relacionados</h3>
+    <div class="row">
+      <div class="col-md-4 mb-4" *ngFor="let relacionado of productosRelacionados">
+        <div class="card h-100">
+          <div class="bg-secondary p-4 text-center">
+            <span class="display-6">{{relacionado.imagenes[0]}}</span>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">{{relacionado.nombre}}</h5>
+            <p class="fw-bold text-primary">\${{relacionado.precio.toFixed(2)}}</p>
+            <a class="btn btn-sm btn-outline-primary w-100" [routerLink]="['/producto', relacionado.id]">
+              Ver producto
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN DE RESEÑAS -->
+  <app-resenas *ngIf="producto" [productoId]="producto.id"></app-resenas>
+</div>
+
+<!-- Mensaje si no se encuentra el producto -->
+<div class="container mt-5 text-center" *ngIf="!producto">
+  <h2>Producto no encontrado</h2>
+  <p class="text-muted">El producto que buscas no existe o ha sido eliminado.</p>
+  <a routerLink="/home" class="btn btn-primary">Volver al inicio</a>
+</div>

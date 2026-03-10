@@ -1,0 +1,108 @@
+<div class="container-fluid mt-4">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Gestión de Productos</h1>
+    <a routerLink="/admin/productos/nuevo" class="btn btn-primary">
+      + Nuevo Producto
+    </a>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6 mb-3 mb-md-0">
+          <label class="form-label">Buscar</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            placeholder="Buscar por nombre o descripción..."
+            [(ngModel)]="searchTerm"
+          >
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Filtrar por categoría</label>
+          <select class="form-select" [(ngModel)]="filtro">
+            <option value="todos">Todos los productos</option>
+            <option value="dama">Dama</option>
+            <option value="caballero">Caballero</option>
+            <option value="ofertas">Ofertas</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de productos -->
+  <div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>ID</th>
+              <th>Imagen</th>
+              <th>Nombre</th>
+              <th>Categoría</th>
+              <th>Precio</th>
+              <th>Descuento</th>
+              <th>Tallas</th>
+              <th>Ventas</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let producto of filtrarProductos()">
+              <td>{{producto.id}}</td>
+              <td>
+                <span class="h3">{{producto.imagenes[0]}}</span>
+              </td>
+              <td>{{producto.nombre}}</td>
+              <td>
+                <span class="badge bg-secondary">{{producto.categoria}}</span>
+              </td>
+              <td>
+                <div *ngIf="producto.precioOriginal">
+                  <span class="text-muted"><del>${{producto.precioOriginal.toFixed(2)}}</del></span>
+                  <br>
+                  <span class="fw-bold text-primary">${{producto.precio.toFixed(2)}}</span>
+                </div>
+                <span class="fw-bold" *ngIf="!producto.precioOriginal">${{producto.precio.toFixed(2)}}</span>
+              </td>
+              <td>
+                <span class="badge bg-danger" *ngIf="getDescuento(producto) > 0">
+                  -{{getDescuento(producto)}}%
+                </span>
+                <span class="text-muted" *ngIf="!getDescuento(producto)">-</span>
+              </td>
+              <td>
+                <span class="badge bg-light text-dark">{{producto.tallas.join(', ')}}</span>
+              </td>
+              <td>{{producto.vendidos || 0}}</td>
+              <td>
+                <div class="btn-group btn-group-sm">
+                  <a [routerLink]="['/admin/productos/editar', producto.id]" 
+                     class="btn btn-outline-primary"
+                     title="Editar">
+                    ✏️
+                  </a>
+                  <button class="btn btn-outline-danger" 
+                          (click)="eliminarProducto(producto.id)"
+                          title="Eliminar"
+                          *ngIf="authService.hasRole('superadmin')">
+                    🗑️
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="filtrarProductos().length === 0">
+              <td colspan="9" class="text-center py-4 text-muted">
+                No hay productos para mostrar
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

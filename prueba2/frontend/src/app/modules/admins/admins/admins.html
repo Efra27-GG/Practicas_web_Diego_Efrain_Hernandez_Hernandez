@@ -1,0 +1,198 @@
+<div class="container-fluid mt-4">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Gestión de Administradores</h1>
+    <button class="btn btn-primary" (click)="abrirModalNuevo()">
+      <i class="bi bi-plus-circle"></i> Nuevo Administrador
+    </button>
+  </div>
+
+  <!-- Tarjeta de información -->
+  <div class="alert alert-info mb-4">
+    <i class="bi bi-info-circle"></i>
+    Como Super Admin puedes crear, editar y eliminar administradores generales.
+    Los Super Admins no pueden ser modificados desde este panel.
+  </div>
+
+  <!-- Tabla de administradores -->
+  <div class="card shadow">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Rol</th>
+              <th>Fecha Registro</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let admin of admins">
+              <td>{{admin.id}}</td>
+              <td>{{admin.nombre}}</td>
+              <td>{{admin.email}}</td>
+              <td>
+                <span class="badge" [ngClass]="{
+                  'bg-warning': admin.role === 'superadmin',
+                  'bg-info': admin.role === 'admin',
+                  'bg-secondary': admin.role === 'registrado'
+                }">
+                  {{admin.role | titlecase}}
+                </span>
+              </td>
+              <td>{{admin.fechaRegistro | date:'dd/MM/yyyy'}}</td>
+              <td>
+                <span class="badge" [ngClass]="{
+                  'bg-success': admin.activo !== false,
+                  'bg-danger': admin.activo === false
+                }">
+                  {{admin.activo !== false ? 'Activo' : 'Inactivo'}}
+                </span>
+              </td>
+              <td>
+                <div class="btn-group btn-group-sm">
+                  <button class="btn btn-outline-primary" 
+                          (click)="editarAdmin(admin)"
+                          title="Editar">
+                    ✏️ Editar
+                  </button>
+                  <button class="btn btn-outline-warning" 
+                          (click)="abrirCambioPassword(admin)"
+                          title="Cambiar contraseña">
+                    🔑 Password
+                  </button>
+                  <button class="btn btn-outline-danger" 
+                          (click)="eliminarAdmin(admin.id, admin.nombre)"
+                          title="Eliminar">
+                    🗑️ Eliminar
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="admins.length === 0">
+              <td colspan="7" class="text-center py-4 text-muted">
+                No hay administradores creados
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NUEVO ADMIN -->
+<div class="modal fade show" [style.display]="showModal ? 'block' : 'none'" 
+     style="background-color: rgba(0,0,0,0.5);" *ngIf="showModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Nuevo Administrador</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="cerrarModales()"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="mensaje" class="alert alert-success">{{mensaje}}</div>
+        <div *ngIf="mensajeError" class="alert alert-danger">{{mensajeError}}</div>
+        
+        <form>
+          <div class="mb-3">
+            <label class="form-label">Nombre completo</label>
+            <input type="text" class="form-control" [(ngModel)]="nuevoAdmin.nombre" name="nombre">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" [(ngModel)]="nuevoAdmin.email" name="email">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Contraseña</label>
+            <input type="password" class="form-control" [(ngModel)]="nuevoAdmin.password" name="password">
+            <small class="text-muted">Mínimo 6 caracteres</small>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Confirmar contraseña</label>
+            <input type="password" class="form-control" [(ngModel)]="nuevoAdmin.confirmPassword" name="confirmPassword">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModales()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="crearAdmin()">Crear Admin</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR ADMIN -->
+<div class="modal fade show" [style.display]="showEditModal ? 'block' : 'none'" 
+     style="background-color: rgba(0,0,0,0.5);" *ngIf="showEditModal && adminEditando">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-warning">
+        <h5 class="modal-title">Editar Administrador</h5>
+        <button type="button" class="btn-close" (click)="cerrarModales()"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="mensaje" class="alert alert-success">{{mensaje}}</div>
+        <div *ngIf="mensajeError" class="alert alert-danger">{{mensajeError}}</div>
+        
+        <form>
+          <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input type="text" class="form-control" [(ngModel)]="adminEditando.nombre" name="editNombre">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" [(ngModel)]="adminEditando.email" name="editEmail">
+          </div>
+          <div class="mb-3">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" 
+                     [(ngModel)]="adminEditando.activo" name="activo">
+              <label class="form-check-label">Cuenta activa</label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModales()">Cancelar</button>
+        <button type="button" class="btn btn-warning" (click)="guardarEdicion()">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CAMBIAR CONTRASEÑA -->
+<div class="modal fade show" [style.display]="showPasswordModal ? 'block' : 'none'" 
+     style="background-color: rgba(0,0,0,0.5);" *ngIf="showPasswordModal && adminPassword">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-warning">
+        <h5 class="modal-title">Cambiar Contraseña - {{adminPassword.nombre}}</h5>
+        <button type="button" class="btn-close" (click)="cerrarModales()"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="mensaje" class="alert alert-success">{{mensaje}}</div>
+        <div *ngIf="mensajeError" class="alert alert-danger">{{mensajeError}}</div>
+        
+        <form>
+          <div class="mb-3">
+            <label class="form-label">Nueva contraseña</label>
+            <input type="password" class="form-control" [(ngModel)]="nuevaPassword" name="nuevaPassword">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Confirmar nueva contraseña</label>
+            <input type="password" class="form-control" [(ngModel)]="confirmNuevaPassword" name="confirmNuevaPassword">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModales()">Cancelar</button>
+        <button type="button" class="btn btn-warning" (click)="cambiarPassword()">Cambiar Contraseña</button>
+      </div>
+    </div>
+  </div>
+</div>
